@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shurakhsha Kavach - Fire Safety Dashboard</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #0f172a;
+            --primary-darker: #0a0f1e;
+            --accent-blue: #3b82f6;
+            --accent-blue-light: #60a5fa;
+            --accent-cyan: #06b6d4;
+            --accent-orange: #f97316;
+            --accent-red: #ef4444;
+            --accent-green: #10b981;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --glass-bg: rgba(15, 23, 42, 0.7);
+            --glass-border: rgba(148, 163, 184, 0.2);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.5);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-darker) 0%, var(--primary-dark) 100%);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .container-main {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+            gap: 0;
+        }
+
+        /* ==================== SIDEBAR ==================== */
+        .sidebar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem 1.5rem;
+            position: fixed;
+            height: 100vh;
+            width: 280px;
+            overflow-y: auto;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text .brand {
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .logo-text .tagline {
+            font-size: 0.65rem;
+            color: var(--accent-cyan);
+            font-weight: 500;
+        }
+
+        .nav-menu {
+            list-style: none;
+            flex: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 1rem;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent-blue-light);
+            transform: translateX(5px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(6, 182, 212, 0.1) 100%);
+            color: var(--accent-blue-light);
+            border-left: 3px solid var(--accent-blue);
+            padding-left: calc(1rem - 3px);
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .user-profile {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .user-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            font-weight: 500;
+        }
+
+        /* ==================== MAIN CONTENT ==================== */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            background: var(--primary-dark);
+        }
+
+        /* ==================== HEADER ==================== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .header-left h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.25rem;
+        }
+
+        .header-left p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .header-right {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .btn-header {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-header:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* ==================== DASHBOARD GRID ==================== */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* ==================== CARDS ==================== */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+        }
+
+        .card:hover {
+            border-color: var(--glass-border);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 1rem 0;
+        }
+
+        .card-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .stat-badge.warning {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.4);
+            color: var(--warning);
+        }
+
+        .stat-badge.danger {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: var(--danger);
+        }
+
+        /* ==================== METRICS ==================== */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .metric-item {
+            background: rgba(59, 130, 246, 0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-blue-light);
+        }
+
+        /* ==================== CHARTS ==================== */
+        .chart-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* ==================== TABLES ==================== */
+        .table-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+            font-weight: 700;
+            color: var(--accent-blue-light);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: rgba(59, 130, 246, 0.05);
+            border-bottom: 1px solid var(--glass-border);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 0.9rem;
+        }
+
+        tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .status-active {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .status-warning {
+            color: var(--warning);
+            font-weight: 600;
+        }
+
+        .status-critical {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        /* ==================== ROLE-BASED ACCESS ==================== */
+        .access-level {
+            display: inline-block;
+            padding: 6px 14px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.2));
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-blue-light);
+        }
+
+        /* ==================== ALERTS SECTION ==================== */
+        .alerts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .alert-item {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-left: 4px solid;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .alert-item.info {
+            border-left-color: var(--accent-blue);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .alert-item.warning {
+            border-left-color: var(--warning);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .alert-item.critical {
+            border-left-color: var(--danger);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .alert-message {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .alert-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container-main {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                border-bottom: 1px solid var(--glass-border);
+                border-right: none;
+                padding: 1rem;
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                display: flex;
+                gap: 0.5rem;
+                flex-wrap: wrap;
+                flex: 1;
+            }
+
+            .nav-item {
+                margin: 0;
+            }
+
+            .nav-link {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+
+            .user-profile {
+                display: none;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ==================== SCROLLBAR ==================== */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.4);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.6);
+        }
+
+        /* ==================== ANIMATIONS ==================== */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card, .chart-container, .table-container {
+            animation: slideIn 0.5s ease-out forwards;
+        }
+
+        /* ==================== LOADING SPINNER ==================== */
+        .spinner {
+            border: 3px solid rgba(59, 130, 246, 0.1);
+            border-top: 3px solid var(--accent-blue);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ==================== DESIGNATION INDICATORS ==================== */
+        .designation-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2));
+            border: 1px solid var(--accent-cyan);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        /* ==================== SSIP BADGE ==================== */
+        .ssip-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            border-radius: 50px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: var(--shadow-md);
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-main">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">🛡️</div>
+                <div class="logo-text">
+                    <div class="brand">SHURAKHSHA KAVACH</div>
+                    <div class="tagline">Fire Safety IoT</div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Active Alerts</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-wifi"></i>
+                        <span>Devices</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Personnel</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        <span>History</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </nav>
+
+            <div class="user-profile">
+                <div class="user-avatar">SB</div>
+                <div class="user-name">System Admin</div>
+                <div class="user-role">📍 Safety Officer</div>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- HEADER -->
+            <div class="header">
+                <div class="header-left">
+                    <h1>Dashboard</h1>
+                    <p>Real-time Fire Safety & Environmental Monitoring</p>
+                </div>
+                <div class="header-right">
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span>All Systems Operational</span>
+                    </div>
+                    <button class="btn-header">
+                        <i class="fas fa-bell"></i> Alerts
+                    </button>
+                </div>
+            </div>
+
+            <!-- KEY METRICS -->
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-thermometer-half"></i> Temperature
+                        </div>
+                        <span class="stat-badge">Normal</span>
+                    </div>
+                    <div class="card-value" id="temp-value">24.5°C</div>
+                    <div class="card-subtitle">
+                        <span id="temp-status" style="color: var(--success);">✓ Within Safe Range</span>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <div class="metric-label">High</div>
+                            <div class="metric-value">28°C</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Low</div>
+                            <div class="metric-value">18°C</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-wind"></i> Gas Level
+                        </div>
+                        <span class="stat-badge">Optimal</span>
+                    </div>
+                    <div class="card-value" id="gas-value">12 PPM</div>
+                    <div class="card-subtitle">
+                        <span id="gas-status" style="color: var(--success);">✓ Detection Threshold: 50 PPM</span>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <div class="metric-label">Alert</div>
+                            <div class="metric-value">50 PPM</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Critical</div>
+                            <div class="metric-value">100 PPM</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-fire"></i> Fire Detection
+                        </div>
+                        <span class="stat-badge">Clear</span>
+                    </div>
+                    <div class="card-value" style="color: var(--success);">0 FLAMES</div>
+                    <div class="card-subtitle">
+                        <span style="color: var(--success);">✓ No Fire Detected</span>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <div class="metric-label">Alarms</div>
+                            <div class="metric-value">0</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Sprinklers</div>
+                            <div class="metric-value">Standby</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACTIVE INCIDENTS & DEVICES -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                <div class="card" style="grid-column: 1;">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-exclamation-circle"></i> Active Incidents
+                        </div>
+                    </div>
+                    <div class="card-value" style="color: var(--success);">0</div>
+                    <div class="card-subtitle" style="margin-top: 1rem;">
+                        Last incident: 2 weeks ago<br>
+                        Response time: 2:45 minutes
+                    </div>
+                </div>
+
+                <div class="card" style="grid-column: 2;">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-wifi"></i> Connected Devices
+                        </div>
+                    </div>
+                    <div class="card-value">8/8</div>
+                    <div class="card-subtitle" style="margin-top: 1rem;">
+                        All units operational<br>
+                        Signal strength: Excellent
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIVE ANALYTICS -->
+            <div class="chart-container">
+                <div class="chart-title">
+                    <i class="fas fa-chart-line"></i> Temperature Trend (24 Hours)
+                </div>
+                <canvas id="tempChart" height="60"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">
+                    <i class="fas fa-wind"></i> Gas Level Trend (24 Hours)
+                </div>
+                <canvas id="gasChart" height="60"></canvas>
+            </div>
+
+            <!-- SYSTEM HEALTH -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-network-wired"></i> System Health
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <div class="metric-item" style="margin-bottom: 0.5rem;">
+                            <div class="metric-label">CPU Usage</div>
+                            <div class="metric-value" style="color: var(--accent-blue);">35%</div>
+                        </div>
+                        <div class="metric-item" style="margin-bottom: 0.5rem;">
+                            <div class="metric-label">Memory</div>
+                            <div class="metric-value" style="color: var(--accent-blue);">62%</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Uptime</div>
+                            <div class="metric-value" style="color: var(--success);">45 days</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-database"></i> Database Status
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <div class="metric-item" style="margin-bottom: 0.5rem;">
+                            <div class="metric-label">Records</div>
+                            <div class="metric-value" style="color: var(--accent-blue);">15,847</div>
+                        </div>
+                        <div class="metric-item" style="margin-bottom: 0.5rem;">
+                            <div class="metric-label">Storage Used</div>
+                            <div class="metric-value" style="color: var(--accent-blue);">2.3 GB</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Backup</div>
+                            <div class="metric-value" style="color: var(--success);">Current</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RECENT ACTIVITY -->
+            <div class="table-container">
+                <div class="table-header">
+                    <i class="fas fa-history"></i> Recent Activity
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Details</th>
+                            <th>User</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Today 14:32 PM</td>
+                            <td><i class="fas fa-check-circle"></i> System Check</td>
+                            <td><span class="status-active">✓ Passed</span></td>
+                            <td>All sensors calibrated</td>
+                            <td><span class="access-level">Admin</span></td>
+                        </tr>
+                        <tr>
+                            <td>Today 10:15 AM</td>
+                            <td><i class="fas fa-wrench"></i> Maintenance</td>
+                            <td><span class="status-active">✓ Complete</span></td>
+                            <td>Device firmware updated</td>
+                            <td><span class="access-level">Tech</span></td>
+                        </tr>
+                        <tr>
+                            <td>Yesterday 09:45 AM</td>
+                            <td><i class="fas fa-user"></i> User Login</td>
+                            <td><span class="status-active">✓ Success</span></td>
+                            <td>Safety Officer logged in</td>
+                            <td><span class="access-level">Officer</span></td>
+                        </tr>
+                        <tr>
+                            <td>2 days ago</td>
+                            <td><i class="fas fa-exclamation"></i> Alert Generated</td>
+                            <td><span class="status-warning">! Warning</span></td>
+                            <td>Temperature exceeded threshold</td>
+                            <td><span class="access-level">System</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PERSONNEL ACCESS TABLE -->
+            <div class="table-container">
+                <div class="table-header">
+                    <i class="fas fa-users"></i> Designation-Based Access
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Designation</th>
+                            <th>Role</th>
+                            <th>Access Level</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Rajesh Kumar</strong></td>
+                            <td><span class="designation-badge">🛡️ Safety Officer</span></td>
+                            <td>Primary</td>
+                            <td><span class="stat-badge">Full Access</span></td>
+                            <td><span class="status-active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Priya Sharma</strong></td>
+                            <td><span class="designation-badge">🏭 Plant Manager</span></td>
+                            <td>Administrator</td>
+                            <td><span class="stat-badge">Full Access</span></td>
+                            <td><span class="status-active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Amit Patel</strong></td>
+                            <td><span class="designation-badge">👨‍💼 Supervisor</span></td>
+                            <td>Manager</td>
+                            <td><span class="stat-badge warning">Limited Access</span></td>
+                            <td><span class="status-active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Neha Singh</strong></td>
+                            <td><span class="designation-badge">📊 Data Analyst</span></td>
+                            <td>Analyst</td>
+                            <td><span class="stat-badge warning">Read-Only</span></td>
+                            <td><span class="status-active">Active</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- SSIP BADGE -->
+    <div class="ssip-badge">
+        <i class="fas fa-star"></i> SSIP READY v2.0
+    </div>
+
+    <script>
+        // Temperature Chart
+        const tempCtx = document.getElementById('tempChart').getContext('2d');
+        new Chart(tempCtx, {
+            type: 'line',
+            data: {
+                labels: ['12 AM', '2 AM', '4 AM', '6 AM', '8 AM', '10 AM', '12 PM', '2 PM', '4 PM', '6 PM', '8 PM', '10 PM'],
+                datasets: [{
+                    label: 'Temperature (°C)',
+                    data: [20, 19, 18, 18, 21, 23, 25, 27, 26, 25, 24, 23],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#3b82f6',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    tension: 0.4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#cbd5e1' }
+                    }
+                },
+                scales: {
+                    y: {
+                        grid: { color: 'rgba(59, 130, 246, 0.1)' },
+                        ticks: { color: '#cbd5e1' }
+                    },
+                    x: {
+                        grid: { color: 'rgba(59, 130, 246, 0.05)' },
+                        ticks: { color: '#cbd5e1' }
+                    }
+                }
+            }
+        });
+
+        // Gas Level Chart
+        const gasCtx = document.getElementById('gasChart').getContext('2d');
+        new Chart(gasCtx, {
+            type: 'line',
+            data: {
+                labels: ['12 AM', '2 AM', '4 AM', '6 AM', '8 AM', '10 AM', '12 PM', '2 PM', '4 PM', '6 PM', '8 PM', '10 PM'],
+                datasets: [{
+                    label: 'Gas Level (PPM)',
+                    data: [8, 9, 7, 6, 10, 14, 16, 15, 13, 12, 11, 10],
+                    borderColor: '#06b6d4',
+                    backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#06b6d4',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    tension: 0.4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#cbd5e1' }
+                    }
+                },
+                scales: {
+                    y: {
+                        grid: { color: 'rgba(6, 182, 212, 0.1)' },
+                        ticks: { color: '#cbd5e1' }
+                    },
+                    x: {
+                        grid: { color: 'rgba(6, 182, 212, 0.05)' },
+                        ticks: { color: '#cbd5e1' }
+                    }
+                }
+            }
+        });
+
+        // Update current time in header
+        setInterval(() => {
+            const now = new Date();
+            document.querySelector('.header-right')?.innerHTML;
+        }, 1000);
+    </script>
+</body>
+</html>

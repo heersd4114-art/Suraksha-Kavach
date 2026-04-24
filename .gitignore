@@ -1,0 +1,188 @@
+# ============================================
+# 🛡️ SURAKSHA KAVACH - .gitignore
+# Tech Stack: Flutter | Django | ESP32 | Firebase
+# ============================================
+
+# ─────────────────────────────────────────────
+# 🐍 PYTHON / DJANGO
+# ─────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+dist/
+build/
+*.whl
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+server.log
+media/
+staticfiles/
+*.pot
+*.pyc
+local_settings.py
+
+# ─────────────────────────────────────────────
+# 🦋 FLUTTER / DART
+# ─────────────────────────────────────────────
+# Flutter build artifacts
+**/build/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+
+# Dart generated files
+*.dart.js
+*.dart.js.deps
+*.dart.js.map
+*.g.dart
+*.freezed.dart
+
+# Pub cache
+.pub-cache/
+.pub/
+pubspec.lock
+
+# Flutter IDE files
+**/.metadata
+**/flutter_export_environment.sh
+
+# ─────────────────────────────────────────────
+# 🤖 ANDROID
+# ─────────────────────────────────────────────
+**/android/.gradle/
+**/android/captures/
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/key.properties
+**/android/**/*.keystore
+**/android/**/*.jks
+!**/android/gradle/wrapper/gradle-wrapper.jar
+
+# ─────────────────────────────────────────────
+# 🍎 iOS / macOS
+# ─────────────────────────────────────────────
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Pods/
+**/ios/.symlinks/
+**/macos/Flutter/ephemeral/
+**/macos/Pods/
+
+# ─────────────────────────────────────────────
+# 🖥️ WINDOWS / LINUX
+# ─────────────────────────────────────────────
+**/windows/flutter/ephemeral/
+**/linux/flutter/ephemeral/
+
+# ─────────────────────────────────────────────
+# 🔥 FIREBASE / SECRETS
+# ─────────────────────────────────────────────
+# Firebase service account keys (CRITICAL - never push these!)
+firebase_key.json
+**/firebase_key.json
+**/google-services.json
+**/GoogleService-Info.plist
+fireguard_ai.json
+
+# Environment / API keys
+.env
+.env.*
+*.env
+secrets/
+credentials/
+
+# ─────────────────────────────────────────────
+# 🔧 ESP32 / ARDUINO
+# ─────────────────────────────────────────────
+# Arduino build output
+**/*.elf
+**/*.hex
+**/*.bin
+**/build_output/
+
+# ─────────────────────────────────────────────
+# 🛠️ IDE & EDITORS
+# ─────────────────────────────────────────────
+# VS Code
+.vscode/
+*.code-workspace
+
+# JetBrains (Android Studio, IntelliJ, PyCharm)
+.idea/
+*.iml
+*.ipr
+*.iws
+.idea_modules/
+
+# Visual Studio
+.vs/
+*.suo
+*.ntvs_analysis.dat
+*.opensdf
+*.sdf
+
+# ─────────────────────────────────────────────
+# 📦 OS-SPECIFIC
+# ─────────────────────────────────────────────
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.Trash-*
+
+# ─────────────────────────────────────────────
+# 📄 MISCELLANEOUS
+# ─────────────────────────────────────────────
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.swo
+temp_*.py
+
+# Large binary files
+*.pptx
+*.zip
+*.rar
+*.7z
+
+# Coverage & test reports
+coverage/
+.coverage
+htmlcov/
+*.lcov
+
+# Analysis text files (debug outputs)
+analysis.txt
+analysis_utf8.txt
+flutter_*.log
