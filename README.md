@@ -311,7 +311,7 @@ Suraksha-Kavach/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/Suraksha-Kavach.git
+git clone https://github.com/heersd4114-art/Suraksha-Kavach.git
 cd Suraksha-Kavach
 ```
 
